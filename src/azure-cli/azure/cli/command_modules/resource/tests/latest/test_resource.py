@@ -23,7 +23,7 @@ from azure.cli.testsdk.checkers import (
 from azure.cli.testsdk.constants import AUX_SUBSCRIPTION, AUX_TENANT
 from azure.cli.core.util import get_file_json
 from knack.util import CLIError
-from azure.cli.core.azclierror import ResourceNotFoundError
+from azure.cli.core.azclierror import DeploymentError, InvalidTemplateError
 
 
 class ResourceGroupScenarioTest(ScenarioTest):
@@ -5726,6 +5726,26 @@ class DeploymentWithBicepScenarioTest(LiveScenarioTest):
         # clean up
         self.kwargs['template_spec_id'] = result['id'].replace('/versions/1.0', '')
         self.cmd('ts delete --template-spec {template_spec_id} --yes')
+
+    @ResourceGroupPreparer(name_prefix='cli_deployment_error_user_friendly_formatting')
+    def test_deployment_error_user_friendly_formatting(self):
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        self.kwargs.update({
+            'tf': os.path.join(curr_dir, 'deployment_error_user_friendly_formatting/main.bicep').replace('\\', '\\\\'),
+        })
+
+        with self.assertRaisesRegex(DeploymentError, "Feature name cannot contain the following characters: '%', ':'."):
+            self.cmd('deployment group create --resource-group {rg} --template-file "{tf}"')
+
+    @ResourceGroupPreparer(name_prefix='cli_validate_error_user_friendly_formatting')
+    def test_validate_error_user_friendly_formatting(self):
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        self.kwargs.update({
+            'tf': os.path.join(curr_dir, 'validate_error_user_friendly_formatting/main.bicep').replace('\\', '\\\\'),
+        })
+
+        with self.assertRaisesRegex(InvalidTemplateError, "Feature name cannot contain the following characters: '%', ':'."):
+            self.cmd('deployment group validate --resource-group {rg} --template-file "{tf}"')
 
 
 class ResourceManagementPrivateLinkTest(ScenarioTest):

@@ -10,6 +10,7 @@ from collections import OrderedDict
 import json
 import re
 
+from azure.cli.command_modules.resource._utils import _build_http_response_error_message
 from azure.cli.core import EXCLUDED_PARAMS
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -105,13 +106,16 @@ def raise_subdivision_deployment_error(error_message, error_code=None):
 
 
 def handle_template_based_exception(ex):
+    from azure.core.exceptions import HttpResponseError
+
     try:
+        if isinstance(ex, HttpResponseError):
+            err_message = _build_http_response_error_message(ex)
+            raise_subdivision_deployment_error(err_message, ex.error.code if ex.error else None)
+
         raise CLIError(ex.inner_exception.error.message)
     except AttributeError:
-        if hasattr(ex, 'response'):
-            raise_subdivision_deployment_error(ex.response.internal_response.text, ex.error.code if ex.error else None)
-        else:
-            raise CLIError(ex)
+        raise CLIError(ex)
 
 
 def handle_long_running_operation_exception(ex):
