@@ -58,6 +58,7 @@ class ResourceType(Enum):  # pylint: disable=too-few-public-methods
     MGMT_RESOURCE_POLICY = ('azure.mgmt.resource.policy', 'PolicyClient')
     MGMT_RESOURCE_RESOURCES = ('azure.mgmt.resource.resources', 'ResourceManagementClient')
     MGMT_RESOURCE_SUBSCRIPTIONS = ('azure.mgmt.resource.subscriptions', 'SubscriptionClient')
+    MGMT_RESOURCE_DEPLOYMENTS = ('azure.mgmt.resource.deployments', 'DeploymentsMgmtClient')
     MGMT_RESOURCE_DEPLOYMENTSCRIPTS = ('azure.mgmt.resource.deploymentscripts', 'DeploymentScriptsClient')
     MGMT_RESOURCE_TEMPLATESPECS = ('azure.mgmt.resource.templatespecs', 'TemplateSpecsClient')
     MGMT_RESOURCE_DEPLOYMENTSTACKS = ('azure.mgmt.resource.deploymentstacks', 'DeploymentStacksClient')
@@ -179,6 +180,7 @@ AZURE_API_PROFILES = {
         }),
         ResourceType.MGMT_RESOURCE_RESOURCES: '2024-11-01',
         ResourceType.MGMT_RESOURCE_SUBSCRIPTIONS: '2022-12-01',
+        ResourceType.MGMT_RESOURCE_DEPLOYMENTS: '2025-04-01',
         ResourceType.MGMT_RESOURCE_DEPLOYMENTSCRIPTS: '2020-10-01',
         ResourceType.MGMT_RESOURCE_TEMPLATESPECS: '2021-05-01',
         ResourceType.MGMT_RESOURCE_DEPLOYMENTSTACKS: '2024-03-01',
